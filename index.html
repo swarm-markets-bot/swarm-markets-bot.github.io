@@ -6,13 +6,202 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>SwarmX</title>
     <script type="module" crossorigin>
-(function(){const t=document.createElement("link").relList;if(t&&t.supports&&t.supports("modulepreload"))return;for(const e of document.querySelectorAll('link[rel="modulepreload"]'))r(e);new MutationObserver(e=>{for(const a of e)if(a.type==="childList")for(const o of a.addedNodes)o.tagName==="LINK"&&o.rel==="modulepreload"&&r(o)}).observe(document,{childList:!0,subtree:!0});function i(e){const a={};return e.integrity&&(a.integrity=e.integrity),e.referrerpolicy&&(a.referrerPolicy=e.referrerpolicy),e.crossorigin==="use-credentials"?a.credentials="include":e.crossorigin==="anonymous"?a.credentials="omit":a.credentials="same-origin",a}function r(e){if(e.ep)return;e.ep=!0;const a=i(e);fetch(e.href,a)}})();const c=["Afghanistan","Albania","Algeria","American Samoa","Andorra","Angola","Anguilla","Antartica","Antigua and Barbuda","Argentina","Armenia","Aruba","Australia","Austria","Azerbaijan","Bahamas","Bahrain","Bangladesh","Barbados","Belarus","Belgium","Belize","Benin","Bermuda","Bhutan","Bolivia","Bosnia and Herzegowina","Botswana","Bouvet Island","Brazil","British Indian Ocean Territory","Brunei Darussalam","Bulgaria","Burkina Faso","Burundi","Cambodia","Cameroon","Canada","Cape Verde","Cayman Islands","Central African Republic","Chad","Chile","China","Christmas Island","Cocos Islands","Colombia","Comoros","Congo","Congo","Cook Islands","Costa Rica","Cota D'Ivoire","Croatia","Cuba","Cyprus","Czech Republic","Denmark","Djibouti","Dominica","Dominican Republic","East Timor","Ecuador","Egypt","El Salvador","Equatorial Guinea","Eritrea","Estonia","Ethiopia","Falkland Islands","Faroe Islands","Fiji","Finland","France","France Metropolitan","French Guiana","French Polynesia","French Southern Territories","Gabon","Gambia","Georgia","Germany","Ghana","Gibraltar","Greece","Greenland","Grenada","Guadeloupe","Guam","Guatemala","Guinea","Guinea-Bissau","Guyana","Haiti","Heard and McDonald Islands","Holy See","Honduras","Hong Kong","Hungary","Iceland","India","Indonesia","Iran","Iraq","Ireland","Israel","Italy","Jamaica","Japan","Jordan","Kazakhstan","Kenya","Kiribati","Democratic People's Republic of Korea","Korea","Kuwait","Kyrgyzstan","Lao","Latvia","Lebanon","Lesotho","Liberia","Libyan Arab Jamahiriya","Liechtenstein","Lithuania","Luxembourg","Macau","Macedonia","Madagascar","Malawi","Malaysia","Maldives","Mali","Malta","Marshall Islands","Martinique","Mauritania","Mauritius","Mayotte","Mexico","Micronesia","Moldova","Monaco","Mongolia","Montserrat","Morocco","Mozambique","Myanmar","Namibia","Nauru","Nepal","Netherlands","Netherlands Antilles","New Caledonia","New Zealand","Nicaragua","Niger","Nigeria","Niue","Norfolk Island","Northern Mariana Islands","Norway","Oman","Pakistan","Palau","Panama","Papua New Guinea","Paraguay","Peru","Philippines","Pitcairn","Poland","Portugal","Puerto Rico","Qatar","Reunion","Romania","Russia","Rwanda","Saint Kitts and Nevis","Saint LUCIA","Saint Vincent","Samoa","San Marino","Sao Tome and Principe","Saudi Arabia","Senegal","Seychelles","Sierra","Singapore","Slovakia","Slovenia","Solomon Islands","Somalia","South Africa","South Georgia","Span","SriLanka","St. Helena","St. Pierre and Miguelon","Sudan","Suriname","Svalbard","Swaziland","Sweden","Switzerland","Syria","Taiwan","Tajikistan","Tanzania","Thailand","Togo","Tokelau","Tonga","Trinidad and Tobago","Tunisia","Turkey","Turkmenistan","Turks and Caicos","Tuvalu","Uganda","Ukraine","United Arab Emirates","United Kingdom","United States","United States Minor Outlying Islands","Uruguay","Uzbekistan","Vanuatu","Venezuela","Vietnam","Virgin Islands (British)","Virgin Islands (U.S)","Wallis and Futana Islands","Western Sahara","Yemen","Serbia","Zambia","Zimbabwe"],d=document.getElementById("app");function m(n){window.location.assign(n)}function l(n){const t=document.createElement("option");return t.setAttribute("value",n),t.textContent=n,t}function g(n){const t="Unfortunately, we do not have offerings for your residency yet.",i=document.createElement("p");return i.classList.add("feedback-text"),i.textContent=t,{feedbackEl:i,mountElement:()=>n.after(i),unmountElement:()=>{var a;return(a=document.querySelector(".feedback-text"))==null?void 0:a.remove()}}}function f(){const n=document.createElement("select");n.classList.add("country-select");const t=a=>a.toLowerCase().match("germany"),i=a=>a.toLowerCase().match("liechtenstein"),r=a=>a.toLowerCase().match("select");let e=l("Select");n.append(e),c.forEach(a=>{let o=l(a);n.append(o)}),n.addEventListener("change",a=>{const{mountElement:o,unmountElement:u}=g(a.target);u();const s=a.target.value;t(s)||i(s)?m("https://docs.swarmx.net/"):r(s)||o()}),d.insertAdjacentElement("beforeend",n)}f();
+      // Polyfill for modulepreload
+      (function () {
+        const linkRelList = document.createElement("link").relList;
 
-</script>
+        if (
+          linkRelList &&
+          linkRelList.supports &&
+          linkRelList.supports("modulepreload")
+        ) {
+          return;
+        }
+
+        const preloadLinks = document.querySelectorAll(
+          'link[rel="modulepreload"]'
+        );
+        preloadLinks.forEach(processPreloadLink);
+
+        new MutationObserver((mutations) => {
+          mutations.forEach((mutation) => {
+            if (mutation.type === "childList") {
+              Array.from(mutation.addedNodes).forEach((node) => {
+                if (node.tagName === "LINK" && node.rel === "modulepreload") {
+                  processPreloadLink(node);
+                }
+              });
+            }
+          });
+        }).observe(document, { childList: true, subtree: true });
+
+        function createFetchOptions(link) {
+          const options = {};
+          if (link.integrity) options.integrity = link.integrity;
+          if (link.referrerpolicy) options.referrerPolicy = link.referrerpolicy;
+
+          switch (link.crossorigin) {
+            case "use-credentials":
+              options.credentials = "include";
+              break;
+            case "anonymous":
+              options.credentials = "omit";
+              break;
+            default:
+              options.credentials = "same-origin";
+          }
+
+          return options;
+        }
+
+        function processPreloadLink(link) {
+          if (link.ep) return; // Already processed
+          link.ep = true;
+          const options = createFetchOptions(link);
+          fetch(link.href, options);
+        }
+      })();
+
+      // Country Selector Implementation
+      const countries = [
+        "Afghanistan","Albania","Algeria","American Samoa","Andorra","Angola","Anguilla","Antartica","Antigua and Barbuda","Argentina","Armenia","Aruba","Australia","Austria","Azerbaijan","Bahamas","Bahrain","Bangladesh","Barbados","Belarus","Belgium","Belize","Benin","Bermuda","Bhutan","Bolivia","Bosnia and Herzegowina","Botswana","Bouvet Island","Brazil","British Indian Ocean Territory","Brunei Darussalam","Bulgaria","Burkina Faso","Burundi","Cambodia","Cameroon","Canada","Cape Verde","Cayman Islands","Central African Republic","Chad","Chile","China","Christmas Island","Cocos Islands","Colombia","Comoros","Congo","Congo","Cook Islands","Costa Rica","Cota D'Ivoire","Croatia","Cuba","Cyprus","Czech Republic","Denmark","Djibouti","Dominica","Dominican Republic","East Timor","Ecuador","Egypt","El Salvador","Equatorial Guinea","Eritrea","Estonia","Ethiopia","Falkland Islands","Faroe Islands","Fiji","Finland","France","France Metropolitan","French Guiana","French Polynesia","French Southern Territories","Gabon","Gambia","Georgia","Germany","Ghana","Gibraltar","Greece","Greenland","Grenada","Guadeloupe","Guam","Guatemala","Guinea","Guinea-Bissau","Guyana","Haiti","Heard and McDonald Islands","Holy See","Honduras","Hong Kong","Hungary","Iceland","India","Indonesia","Iran","Iraq","Ireland","Israel","Italy","Jamaica","Japan","Jordan","Kazakhstan","Kenya","Kiribati","Democratic People's Republic of Korea","Korea","Kuwait","Kyrgyzstan","Lao","Latvia","Lebanon","Lesotho","Liberia","Libyan Arab Jamahiriya","Liechtenstein","Lithuania","Luxembourg","Macau","Macedonia","Madagascar","Malawi","Malaysia","Maldives","Mali","Malta","Marshall Islands","Martinique","Mauritania","Mauritius","Mayotte","Mexico","Micronesia","Moldova","Monaco","Mongolia","Montserrat","Morocco","Mozambique","Myanmar","Namibia","Nauru","Nepal","Netherlands","Netherlands Antilles","New Caledonia","New Zealand","Nicaragua","Niger","Nigeria","Niue","Norfolk Island","Northern Mariana Islands","Norway","Oman","Pakistan","Palau","Panama","Papua New Guinea","Paraguay","Peru","Philippines","Pitcairn","Poland","Portugal","Puerto Rico","Qatar","Reunion","Romania","Russia","Rwanda","Saint Kitts and Nevis","Saint LUCIA","Saint Vincent","Samoa","San Marino","Sao Tome and Principe","Saudi Arabia","Senegal","Seychelles","Sierra","Singapore","Slovakia","Slovenia","Solomon Islands","Somalia","South Africa","South Georgia","Span","SriLanka","St. Helena","St. Pierre and Miguelon","Sudan","Suriname","Svalbard","Swaziland","Sweden","Switzerland","Syria","Taiwan","Tajikistan","Tanzania","Thailand","Togo","Tokelau","Tonga","Trinidad and Tobago","Tunisia","Turkey","Turkmenistan","Turks and Caicos","Tuvalu","Uganda","Ukraine","United Arab Emirates","United Kingdom","United States","United States Minor Outlying Islands","Uruguay","Uzbekistan","Vanuatu","Venezuela","Vietnam","Virgin Islands (British)","Virgin Islands (U.S)","Wallis and Futana Islands","Western Sahara","Yemen","Serbia","Zambia","Zimbabwe"
+      ];
+      const appElement = document.getElementById("app");
+
+      // Redirect to a given URL
+      function redirectTo(url) {
+        // Prevent infinite redirection
+        if (window.location.href !== url) {
+          window.location.assign(url);
+        }
+      }
+
+      // Create an option element for the select dropdown
+      function createOption(value) {
+        const option = document.createElement("option");
+        option.value = value;
+        option.textContent = value;
+        return option;
+      }
+
+      // Feedback message management
+      function createFeedbackMessage(target) {
+        const feedbackText =
+          "Unfortunately, we do not have offerings for your residency yet.";
+        const feedbackElement = document.createElement("p");
+        feedbackElement.classList.add("feedback-text");
+        feedbackElement.textContent = feedbackText;
+
+        return {
+          feedbackEl: feedbackElement,
+          mountElement: () => target.after(feedbackElement),
+          unmountElement: () => {
+            const existingFeedback = document.querySelector(".feedback-text");
+            if (existingFeedback) existingFeedback.remove();
+          },
+        };
+      }
+
+      // Initialize country selector
+      function initializeCountrySelector() {
+        const select = document.createElement("select");
+        select.classList.add("country-select");
+
+        // Helper functions for country checks
+        const isGermany = (country) => country.toLowerCase() === "germany";
+        const isLiechtenstein = (country) =>
+          country.toLowerCase() === "liechtenstein";
+        const isDefaultOption = (country) => country.toLowerCase() === "select";
+
+        // Add default "Select" option
+        select.append(createOption("Select"));
+
+        // Add all countries as options
+        countries.forEach((country) => {
+          select.append(createOption(country));
+        });
+
+        // Handle country selection change
+        select.addEventListener("change", (event) => {
+          const { mountElement, unmountElement } =
+            createFeedbackMessage(select);
+          unmountElement();
+
+          const selectedCountry = event.target.value;
+
+          if (isGermany(selectedCountry) || isLiechtenstein(selectedCountry)) {
+            redirectTo("https://docs.swarmx.net/");
+          } else if (!isDefaultOption(selectedCountry)) {
+            mountElement();
+          }
+        });
+
+        // Add the select dropdown to the app element
+        appElement.insertAdjacentElement("beforeend", select);
+      }
+
+      // Initialize the country selector
+      initializeCountrySelector();
+    </script>
     <style>
-:root{font-family:gitbook-content-font,-apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif;font-size:16px;line-height:24px;font-weight:400;color-scheme:light dark;font-synthesis:none;text-rendering:optimizeLegibility;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;-webkit-text-size-adjust:100%}*{margin:0;padding:0}#app{display:flex;flex-direction:column;align-items:center;justify-content:center}.header{display:flex;align-items:center;border-bottom:solid 1px rgba(227,232,327);padding:0 24px;height:80px}.logo-wrp{display:flex;flex-wrap:nowrap;align-items:center;width:40px;height:40px}.logo-img-wrp{display:flex;margin-right:16px}.logo-text{color:#3b454e;text-decoration:none;font-size:20px;font-weight:700}.country-select{padding:10px;margin:20px 0}.select-title{margin-top:20px;color:#3b454e;font-size:20px;font-weight:700}
-
-</style>
+      :root {
+        font-family: gitbook-content-font, -apple-system, BlinkMacSystemFont,
+          Segoe UI, Helvetica, Arial, sans-serif;
+        font-size: 16px;
+        line-height: 24px;
+        font-weight: 400;
+        color-scheme: light dark;
+        font-synthesis: none;
+        text-rendering: optimizeLegibility;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        -webkit-text-size-adjust: 100%;
+      }
+      * {
+        margin: 0;
+        padding: 0;
+      }
+      #app {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+      }
+      .header {
+        display: flex;
+        align-items: center;
+        border-bottom: solid 1px rgba(227, 232, 327);
+        padding: 0 24px;
+        height: 80px;
+      }
+      .logo-wrp {
+        display: flex;
+        flex-wrap: nowrap;
+        align-items: center;
+        width: 40px;
+        height: 40px;
+      }
+      .logo-img-wrp {
+        display: flex;
+        margin-right: 16px;
+      }
+      .logo-text {
+        color: #3b454e;
+        text-decoration: none;
+        font-size: 20px;
+        font-weight: 700;
+      }
+      .country-select {
+        padding: 10px;
+        margin: 20px 0;
+      }
+      .select-title {
+        margin-top: 20px;
+        color: #3b454e;
+        font-size: 20px;
+        font-weight: 700;
+      }
+    </style>
   </head>
   <body>
     <header class="header">
@@ -26,7 +215,7 @@
             />
           </div>
           <span class="logo-text">SwarmX</span>
-        </div>  
+        </div>
       </a>
     </header>
     <main>
@@ -34,6 +223,6 @@
         <p class="select-title">Please select your country of residency:</p>
       </div>
     </main>
-    
   </body>
 </html>
+
